@@ -34,6 +34,8 @@ const CreatePost = () => {
   const imageRef = new useRef(null);
   const [remainingChar, setRemainingChar] = useState(MAX_CHAR);
   const user = useRecoilValue(userAtom);
+  const [loading, setLoading] = useState(false);
+
   const handleTextChange = (e) => {
     const inputText = e.target.value;
     if (inputText.length > MAX_CHAR) {
@@ -47,22 +49,34 @@ const CreatePost = () => {
   };
 
   const handleCreatePost = async () => {
-    const res = await fetch("/api/posts/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ postedBy: user._id, text: postText, img: imgUrl }),
-    });
-    const data = await res.json();
-    if (data.error) {
-      showToast("Error", data.error, "error");
-      return;
+    setLoading(true);
+    try {
+      setLoading(true);
+      const res = await fetch("/api/posts/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          postedBy: user._id,
+          text: postText,
+          img: imgUrl,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
+      showToast("Success", "Post created successfully", "success");
+      onClose();
+      setPostText("");
+      setImgUrl("");
+    } catch (error) {
+      showToast("Error", error, "error");
+    } finally {
+      setLoading(false);
     }
-    showToast("Success", "Post created successfully", "success");
-    onClose();
-    setPostText("");
-    setImgUrl("");
   };
   return (
     <>
@@ -127,7 +141,12 @@ const CreatePost = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleCreatePost}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleCreatePost}
+              isLoading={loading}
+            >
               Creat
             </Button>
           </ModalFooter>
