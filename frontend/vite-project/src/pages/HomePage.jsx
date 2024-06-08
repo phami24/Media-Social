@@ -1,13 +1,47 @@
-import { Button, Flex } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Flex, Spinner } from "@chakra-ui/react";
+import useShowToast from "../hooks/useShowToast";
+import { useEffect, useState } from "react";
+import Post from "../components/Post";
 
 const HomePage = () => {
-  return(
-    <Link to={"/mp"}>
-        <Flex w={"full"} justifyContent={"center"}>
-            <Button mx={"auto"}>Vistit Profile Page</Button>
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const showToast = useShowToast();
+  useEffect(() => {
+    const getFeedPosts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/posts/feed");
+        const data = await res.json();
+        console.log("Data:", data);
+        setPosts(data);
+        console.log("Post:", posts);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    getFeedPosts();
+  }, [showToast]);
+  return (
+    <>
+      {!loading && posts.length === 0 && (
+        <Flex justify="center">
+          <h1>Follow some users to see the feed</h1>
         </Flex>
-    </Link>
+      )}
+
+      {loading && (
+        <Flex justify="center">
+          <Spinner size="xl" />
+        </Flex>
+      )}
+
+      {posts.map((post) => (
+        <Post key={post._id} post={post} postedBy={post.postedBy} />
+      ))}
+    </>
   );
 };
 

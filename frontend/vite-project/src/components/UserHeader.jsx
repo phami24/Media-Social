@@ -27,7 +27,6 @@ const UserHeader = ({ user }) => {
     user.followers.includes(currentUser._id)
   );
   const [updating, setUpdating] = useState(false);
-  console.log(following);
 
   const handleFollowUnFollow = async () => {
     if (!currentUser) {
