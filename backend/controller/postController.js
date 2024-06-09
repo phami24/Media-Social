@@ -1,6 +1,7 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import { v2 as cloudinary } from "cloudinary";
+
 const createPost = async (req, res) => {
   try {
     const { postedBy, text } = req.body;
@@ -32,7 +33,7 @@ const createPost = async (req, res) => {
 
     await newPost.save();
 
-    res.status(200).json({ message: "Created successfully" });
+    res.status(200).json(newPost);
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log("Error creating post", error.message);
@@ -152,6 +153,23 @@ const getFeedPosts = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const getUserPosts = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const posts = await Post.find({ postedBy: user._id }).sort({
+      createdAt: -1,
+    });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 export {
   createPost,
@@ -160,4 +178,5 @@ export {
   likeUnlikePost,
   replyToPost,
   getFeedPosts,
+  getUserPosts,
 };
