@@ -1,6 +1,8 @@
-import Conversation from "../models/conversationModel";
+import Conversation from "../models/conversationModel.js";
+import Message from "../models/messageModel.js";
+import { getRecipientSocketId, io } from "../socket/socket.js";
 
-async function sendMessage() {
+async function sendMessage(req, res) {
   try {
     const { recipientId, message } = req.body;
     const senderId = req.user._id;
@@ -17,26 +19,29 @@ async function sendMessage() {
           sender: senderId,
         },
       });
-      await conversation.save();
-
-      const newMessage = new Message({
-        conversationId: conversation._id,
-        sender: senderId,
-        text: message,
-      });
-
-      await Promise.all([
-        newMessage.save(),
-        conversation.updateOne({
-          lastMessage: {
-            text: message,
-            sender: senderId,
-          },
-        }),
-      ]);
-
-      res.status(201).json(newMessage);
+      console.log(conversation);
     }
+    await conversation.save();
+
+    const newMessage = new Message({
+      conversationId: conversation._id,
+      sender: senderId,
+      text: message,
+    });
+    await Promise.all([
+      newMessage.save(),
+      conversation.updateOne({
+        lastMessage: {
+          text: message,
+          sender: senderId,
+        },
+      }),
+    ]);
+    const recipientSocketId = getRecipientSocketId(recipientId);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit("newMessage", newMessage);
+    }
+    res.status(201).json(newMessage);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

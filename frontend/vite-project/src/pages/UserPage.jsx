@@ -14,6 +14,7 @@ const UserPage = () => {
   const showToast = useShowToast();
   const [posts, setPosts] = useRecoilState(postsAtom);
   const [fetchingPosts, setFetchingPosts] = useState(true);
+  
   useEffect(() => {
     const getPosts = async () => {
       setFetchingPosts(true);
