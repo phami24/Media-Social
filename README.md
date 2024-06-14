@@ -1,4 +1,4 @@
-# Social Media App
+# Social Media App ( https://media-social.onrender.com )
 
 ## Overview
 This project is a feature-rich social media application built using the MERN stack (MongoDB, Express, React, Node.js) with real-time capabilities powered by Socket.io and a modern, responsive user interface crafted with Chakra UI. The app provides comprehensive user authentication and authorization using JWT, enabling a secure and interactive social experience.
@@ -29,47 +29,6 @@ This project is a feature-rich social media application built using the MERN sta
   - 🍃 MongoDB
 - **Real-Time Communication**: 
   - 🔌 Socket.io
-
-## Installation
-To get started with the project, follow these steps:
-
-1. **Clone the repository:**
-    ```sh
-    git clone https://github.com/your-username/social-media-app.git
-    cd social-media-app
-    ```
-
-2. **Install backend dependencies:**
-    ```sh
-    cd server
-    npm install
-    ```
-
-3. **Install frontend dependencies:**
-    ```sh
-    cd ../client
-    npm install
-    ```
-
-4. **Create a `.env` file in the `server` directory and add the following environment variables:**
-    ```env
-    PORT=5000
-    MONGO_URI=your_mongodb_connection_string
-    JWT_SECRET=your_jwt_secret
-    ```
-
-5. **Run the backend server:**
-    ```sh
-    cd server
-    npm start
-    ```
-
-6. **Run the frontend development server:**
-    ```sh
-    cd ../client
-    npm start
-    ```
-
 ## Usage
 Once the application is running, you can access it at `http://localhost:3000`. Register a new account or log in with an existing account to start using the social media features.
 
