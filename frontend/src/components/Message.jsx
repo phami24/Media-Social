@@ -43,15 +43,35 @@ const Message = ({ ownMessage, message, isLastMessage }) => {
       ) : (
         <Flex gap={2}>
           <Avatar src={selectedconversation.userProfilePic} w={7} h={7} />
-          <Text
-            maxW={"350px"}
-            bg={"gray.400"}
-            p={1}
-            borderRadius={"md"}
-            color={"black"}
-          >
-            {message.text}
-          </Text>
+          {message.text && (
+            <Text
+              maxW={"350px"}
+              bg={"gray.400"}
+              p={1}
+              borderRadius={"md"}
+              color={"black"}
+            >
+              {message.text}
+            </Text>
+          )}
+          {message.img && !imgLoaded && (
+            <Flex mt={5} w={"200px"}>
+              <Image
+                src={message.img}
+                hidden
+                onLoad={() => setImgLoaded(true)}
+                alt="Message image"
+                borderRadius={4}
+              />
+              <Skeleton w={"200px"} h={"200px"} />
+            </Flex>
+          )}
+
+          {message.img && imgLoaded && (
+            <Flex mt={5} w={"200px"}>
+              <Image src={message.img} alt="Message image" borderRadius={4} />
+            </Flex>
+          )}
         </Flex>
       )}
     </>
