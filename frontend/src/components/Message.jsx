@@ -1,8 +1,10 @@
-import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import { selectedConversationAtom } from "../atoms/messageAtom";
+import { useState } from "react";
 const Message = ({ ownMessage, message, isLastMessage }) => {
   const selectedconversation = useRecoilValue(selectedConversationAtom);
+  const [imgLoaded, setImgLoaded] = useState(false);
   return (
     <>
       {ownMessage ? (
@@ -13,8 +15,20 @@ const Message = ({ ownMessage, message, isLastMessage }) => {
                 <Text color={"white"}>{message.text}</Text>
               </Flex>
             )}
+            {message.img && !imgLoaded && (
+              <Flex mt={5} w={"200px"}>
+                <Image
+                  src={message.img}
+                  hidden
+                  onLoad={() => setImgLoaded(true)}
+                  alt="Message image"
+                  borderRadius={4}
+                />
+                <Skeleton w={"200px"} h={"200px"} />
+              </Flex>
+            )}
 
-            {message.img && (
+            {message.img && imgLoaded && (
               <Flex mt={5} w={"200px"}>
                 <Image src={message.img} alt="Message image" borderRadius={4} />
               </Flex>
